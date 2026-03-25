@@ -11,7 +11,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ======== ishneet-feature route ========
+// ======== KARAN'S AUTH ROUTES ========
+const authRoutes = require('./routes/authRoutes');
+app.use('/api/auth', authRoutes);
+// ===================================
+
+// ======== ISHNEET'S ROUTES ========
 const sessionRoutes = require('./routes/sessionRoutes');
 app.use('/api/sessions', sessionRoutes);
 // ===================================
