@@ -26,6 +26,11 @@ const sessionRoutes = require('./routes/sessionRoutes');
 app.use('/api/sessions', sessionRoutes);
 // ===================================
 
+// ======== admin dashboard route ========
+const dashboardRoutes = require('./routes/dashboardRoutes');
+app.use('/api/dashboard', dashboardRoutes);
+// ===================================
+
 // Basic testing route
 app.get('/', (req, res) => {
     res.json({ message: "Welcome to UniSkills API. Server is running perfectly!" });
