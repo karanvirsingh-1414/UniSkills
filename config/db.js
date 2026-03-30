@@ -1,12 +1,12 @@
-// config/db.js
 const { Sequelize } = require('sequelize');
+const path = require('path');
 require('dotenv').config();
-
-// MySQL connection setup (isme root aur password Kirtan ke hisab se change hoga baad me)
-const sequelize = new Sequelize('uniskills_db', 'root', 'your_password', {
-    host: 'localhost',
-    dialect: 'mysql',
+const dbPath = process.env.NODE_ENV === 'production'
+    ? '/tmp/uniskills.sqlite'
+    : path.join(__dirname, '..', 'uniskills_database.sqlite');
+const sequelize = new Sequelize({
+    dialect: 'sqlite',
+    storage: dbPath,
     logging: false
 });
-
 module.exports = sequelize;

@@ -1,26 +1,27 @@
-// controllers/skillController.js
-const Skill = require('../models/Skill');
-
-// Function: Database mein nayi skill add karna
+const { Skill, User } = require('../models');
 exports.addSkill = async (req, res) => {
     try {
-        const { name, category } = req.body;
-        
+        const { name, category, credits, mentorId } = req.body;
         const newSkill = await Skill.create({
             name,
-            category
+            category: category || "General",
+            credits: credits || 50,
+            mentorId
         });
-
-        res.status(201).json({ message: "New skill added to platform successfully!", skill: newSkill });
+        const populatedSkill = await Skill.findByPk(newSkill.id, {
+            include: [{ model: User, as: 'mentor', attributes: ['id', 'name', 'email', 'resumeUrl', 'profilePic', 'bio', 'cgpa', 'phone'] }]
+        });
+        req.app.get('socketio').emit('new_skill_published', populatedSkill);
+        res.status(201).json({ message: "Skill published to the campus!", skill: populatedSkill });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
-
-// Function: Database se saari available skills dikhana
 exports.getAllSkills = async (req, res) => {
     try {
-        const skills = await Skill.findAll();
+        const skills = await Skill.findAll({
+            include: [{ model: User, as: 'mentor', attributes: ['id', 'name', 'email', 'resumeUrl', 'profilePic', 'bio', 'cgpa', 'phone'] }]
+        });
         res.status(200).json(skills);
     } catch (error) {
         res.status(500).json({ error: error.message });

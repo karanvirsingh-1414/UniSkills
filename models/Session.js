@@ -1,6 +1,5 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
-
 const Session = sequelize.define('Session', {
   topic: {
     type: DataTypes.STRING,
@@ -20,8 +19,7 @@ const Session = sequelize.define('Session', {
   },
   status: {
     type: DataTypes.STRING,
-    defaultValue: 'pending' // 'pending', 'active', 'completed'
+    defaultValue: 'pending' 
   }
 });
-
 module.exports = Session;

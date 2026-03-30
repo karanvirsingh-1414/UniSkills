@@ -1,8 +1,5 @@
-// models/Skill.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
-
-// "Skill" naam ki table ka architecture
 const Skill = sequelize.define('Skill', {
     name: {
         type: DataTypes.STRING,
@@ -10,12 +7,15 @@ const Skill = sequelize.define('Skill', {
     },
     category: {
         type: DataTypes.STRING,
-        allowNull: false,
+        defaultValue: 'Technology',
     },
-    endorsements: {
+    credits: {
         type: DataTypes.INTEGER,
-        defaultValue: 0
+        defaultValue: 50
+    },
+    mentorId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
     }
 });
-
 module.exports = Skill;
