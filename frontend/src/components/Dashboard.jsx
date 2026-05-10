@@ -13,7 +13,7 @@ const NotificationToast = ({ notification }) => {
 };
 const UserProfileModal = ({ profile, onClose }) => {
   if (!profile) return null;
-  const avatar = profile.profilePic ? `${API_BASE}${profile.profilePic}` : "https://api.dicebear.com/7.x/avataaars/svg?seed=" + profile.id;
+  const avatar = profile.profilePic ? (profile.profilePic.startsWith('http') ? profile.profilePic : `${API_BASE}${profile.profilePic}`) : "https://api.dicebear.com/7.x/avataaars/svg?seed=" + profile.id;
   return (
     <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(5px)', zIndex: 10000, display: 'flex', justifyContent: 'center', alignItems: 'center', animation: 'fadeIn 0.2s ease' }} onClick={onClose}>
       <div style={{ background: '#07090f', padding: '30px', borderRadius: '24px', width: '450px', border: '1px solid rgba(168, 85, 247, 0.4)', boxShadow: '0 25px 50px rgba(0,0,0,0.5)', position: 'relative' }} onClick={e => e.stopPropagation()}>
@@ -33,7 +33,7 @@ const UserProfileModal = ({ profile, onClose }) => {
             </div>
          </div>
          {profile.resumeUrl ? (
-             <a href={`${API_BASE}${profile.resumeUrl}`} target="_blank" rel="noreferrer" style={{ display: 'block', textAlign: 'center', background: 'linear-gradient(135deg, #a64cff, #6222b5)', color: 'white', padding: '12px', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold' }}>
+             <a href={profile.resumeUrl.startsWith('http') ? profile.resumeUrl : `${API_BASE}${profile.resumeUrl}`} target="_blank" rel="noreferrer" style={{ display: 'block', textAlign: 'center', background: 'linear-gradient(135deg, #a64cff, #6222b5)', color: 'white', padding: '12px', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold' }}>
                📄 View Portfolio / Resume PDF
              </a>
          ) : (
@@ -48,6 +48,7 @@ const Dashboard = () => {
   const [notification, setNotification] = useState("");
   const [walletBalance, setWalletBalance] = useState(0);
   const [pendingRequests, setPendingRequests] = useState([]);
+  const [outboundRequests, setOutboundRequests] = useState([]);
   const [activeSessions, setActiveSessions] = useState([]);
   const [completedSessions, setCompletedSessions] = useState([]);
   const [transactions, setTransactions] = useState([]);
@@ -69,6 +70,7 @@ const Dashboard = () => {
          const allMentoring = res.data.mentoringSessions || [];
          const allLearning = res.data.learningSessions || [];
          setPendingRequests(allMentoring.filter(s => s.status === 'pending'));
+         setOutboundRequests(allLearning.filter(s => s.status === 'pending'));
          setActiveSessions([
             ...allMentoring.filter(s => s.status === 'active').map(s => ({ ...s, role: 'mentor' })), 
             ...allLearning.filter(s => s.status === 'active').map(s => ({ ...s, role: 'student' }))
@@ -263,7 +265,7 @@ const Dashboard = () => {
         {otherSkills.length === 0 && <p style={{ color: '#94a3b8' }}>No one else has published skills yet.</p>}
         <div className="stats-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
           {otherSkills.map(skill => {
-            const avatar = skill.mentor?.profilePic ? `${API_BASE}${skill.mentor.profilePic}` : "https://api.dicebear.com/7.x/avataaars/svg?seed=" + skill.mentorId;
+            const avatar = skill.mentor?.profilePic ? (skill.mentor.profilePic.startsWith('http') ? skill.mentor.profilePic : `${API_BASE}${skill.mentor.profilePic}`) : "https://api.dicebear.com/7.x/avataaars/svg?seed=" + skill.mentorId;
             return (
             <div key={skill.id} className="feed-panel" style={{ padding: '25px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -308,11 +310,11 @@ const Dashboard = () => {
     <div style={{ animation: 'fadeIn 0.4s ease' }}>
       <div className="dashboard-header"><div className="header-title"><h1>Mentorship Logs</h1><p>Accept requests securely verified by Server DB.</p></div></div>
       <div className="feed-panel" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-        <h3 style={{ margin: 0, color: '#f59e0b' }}>⏳ Pending Received Requests ({pendingRequests.length})</h3>
-        {pendingRequests.length === 0 && <p style={{ color: '#94a3b8' }}>No requests.</p>}
+        <h3 style={{ margin: 0, color: '#f59e0b' }}>⏳ Incoming Requests (For You to Teach) ({pendingRequests.length})</h3>
+        {pendingRequests.length === 0 && <p style={{ color: '#94a3b8' }}>No incoming requests.</p>}
         {pendingRequests.map(req => {
           const remoteUser = req.student;
-          const avatar = remoteUser?.profilePic ? `${API_BASE}${remoteUser.profilePic}` : "https://api.dicebear.com/7.x/avataaars/svg?seed=" + req.studentId;
+          const avatar = remoteUser?.profilePic ? (remoteUser.profilePic.startsWith('http') ? remoteUser.profilePic : `${API_BASE}${remoteUser.profilePic}`) : "https://api.dicebear.com/7.x/avataaars/svg?seed=" + req.studentId;
           return (
           <div key={req.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.02)', padding: '20px', borderRadius: '12px', border: '1px solid #f59e0b' }}>
             <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
@@ -328,11 +330,27 @@ const Dashboard = () => {
               }}>Accept Session</button>
           </div>
         )})}
+
+        <h3 style={{ margin: '20px 0 0 0', color: '#60a5fa' }}>📤 My Sent Requests (Waiting for Mentor) ({outboundRequests.length})</h3>
+        {outboundRequests.length === 0 && <p style={{ color: '#94a3b8' }}>No pending outbound requests.</p>}
+        {outboundRequests.map(req => {
+          const mentor = req.mentor;
+          const avatar = mentor?.profilePic ? (mentor.profilePic.startsWith('http') ? mentor.profilePic : `${API_BASE}${mentor.profilePic}`) : "https://api.dicebear.com/7.x/avataaars/svg?seed=" + req.mentorId;
+          return (
+          <div key={req.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(59, 130, 246, 0.05)', padding: '20px', borderRadius: '12px', border: '1px solid #3b82f6' }}>
+            <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
+               <img src={avatar} alt="PP" onClick={() => setViewingProfile(mentor)} style={{ width: '45px', height: '45px', borderRadius: '50%', cursor: 'pointer', border: '2px solid #3b82f6' }} title="View Mentor Profile" />
+               <div><h4 style={{ margin: '0 0 5px 0' }}>{req.topic}</h4><p style={{ margin: 0, color: '#94a3b8', fontSize: '14px' }}>Requested from: {mentor?.name || 'Unknown'} • Offered: 🟡 {req.creditsTransferred}</p></div>
+            </div>
+            <div style={{ background: 'rgba(255,255,255,0.1)', color: '#cbd5e1', padding: '8px 15px', borderRadius: '8px', fontWeight: 'bold', fontSize: '14px' }}>Status: Pending Approval</div>
+          </div>
+        )})}
+
         <h3 style={{ margin: '20px 0 0 0', color: '#4ade80' }}>🟢 Active Sessions ({activeSessions.length})</h3>
         {activeSessions.length === 0 && <p style={{ color: '#94a3b8' }}>No active sessions.</p>}
         {activeSessions.map(sess => {
           const remoteUser = sess.role === 'mentor' ? sess.student : sess.mentor;
-          const avatar = remoteUser?.profilePic ? `${API_BASE}${remoteUser.profilePic}` : "https://api.dicebear.com/7.x/avataaars/svg?seed=" + (sess.role === 'mentor' ? sess.studentId : sess.mentorId);
+          const avatar = remoteUser?.profilePic ? (remoteUser.profilePic.startsWith('http') ? remoteUser.profilePic : `${API_BASE}${remoteUser.profilePic}`) : "https://api.dicebear.com/7.x/avataaars/svg?seed=" + (sess.role === 'mentor' ? sess.studentId : sess.mentorId);
           return (
           <div key={sess.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(16, 185, 129, 0.05)', padding: '20px', borderRadius: '12px', border: '1px solid rgba(16, 185, 129, 0.5)' }}>
             <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
@@ -482,7 +500,7 @@ const Dashboard = () => {
               <div style={{ background: 'rgba(255,255,255,0.01)', padding: '25px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
                  <p style={{ margin: '0 0 15px 0', color: '#e2e8f0', fontWeight: 'bold', fontSize: '15px' }}>Visual Profile Photo</p>
                  <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-                    <img src={currentUser.profilePic ? `${API_BASE}${currentUser.profilePic}` : "https://api.dicebear.com/7.x/avataaars/svg?seed=" + currentUser.id} alt="PP" style={{ width: '80px', height: '80px', borderRadius: '16px', border: '2px solid #3b82f6', objectFit: 'cover' }} />
+                    <img src={currentUser.profilePic ? (currentUser.profilePic.startsWith('http') ? currentUser.profilePic : `${API_BASE}${currentUser.profilePic}`) : "https://api.dicebear.com/7.x/avataaars/svg?seed=" + currentUser.id} alt="PP" style={{ width: '80px', height: '80px', borderRadius: '16px', border: '2px solid #3b82f6', objectFit: 'cover' }} />
                     <form onSubmit={handlePicUpload} style={{ display: 'flex', flexDirection: 'column', gap: '10px', flexGrow: 1 }}>
                         <input id="picFileUploader" type="file" accept="image/*" onChange={e => setPicFile(e.target.files[0])} style={{ display: 'none' }} />
                         <label htmlFor="picFileUploader" style={{ display: 'inline-block', background: picFile ? 'rgba(16, 185, 129, 0.1)' : 'rgba(255,255,255,0.03)', border: picFile ? '1px solid #10b981' : '1px dashed rgba(255,255,255,0.2)', color: picFile ? '#10b981' : '#94a3b8', padding: '12px 15px', borderRadius: '8px', cursor: 'pointer', textAlign: 'center', fontSize: '14px', transition: '0.2s' }}>
@@ -496,7 +514,7 @@ const Dashboard = () => {
               <div style={{ background: 'rgba(255,255,255,0.01)', padding: '25px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
                      <p style={{ margin: 0, color: '#e2e8f0', fontWeight: 'bold', fontSize: '15px' }}>Resumé & Portfolio (PDF)</p>
-                     {currentUser.resumeUrl && <a href={`${API_BASE}${currentUser.resumeUrl}`} target="_blank" rel="noreferrer" style={{ fontSize: '13px', background: 'rgba(168, 85, 247, 0.2)', color: '#d8b4fe', padding: '4px 10px', borderRadius: '6px', textDecoration: 'none', fontWeight: 'bold' }}>Open Document</a>}
+                     {currentUser.resumeUrl && <a href={currentUser.resumeUrl.startsWith('http') ? currentUser.resumeUrl : `${API_BASE}${currentUser.resumeUrl}`} target="_blank" rel="noreferrer" style={{ fontSize: '13px', background: 'rgba(168, 85, 247, 0.2)', color: '#d8b4fe', padding: '4px 10px', borderRadius: '6px', textDecoration: 'none', fontWeight: 'bold' }}>Open Document</a>}
                  </div>
                  <form onSubmit={handlePdfUpload} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                     <input id="pdfUploader" type="file" accept="application/pdf" onChange={e => setFile(e.target.files[0])} style={{ display: 'none' }} />
@@ -607,7 +625,7 @@ const Dashboard = () => {
               <div style={{ overflowY: 'auto', flexGrow: 1 }}>
                   {contacts.length === 0 && <p style={{ padding: '20px', color: '#94a3b8' }}>No one else on campus yet.</p>}
                   {contacts.map(c => {
-                      const avatar = c.profilePic ? `${API_BASE}${c.profilePic}` : `https://api.dicebear.com/7.x/avataaars/svg?seed=${c.id}`;
+                      const avatar = c.profilePic ? (c.profilePic.startsWith('http') ? c.profilePic : `${API_BASE}${c.profilePic}`) : `https://api.dicebear.com/7.x/avataaars/svg?seed=${c.id}`;
                       const isActive = activeChat?.id === c.id;
                       return (
                       <div key={c.id} onClick={() => setActiveChat(c)} style={{ display: 'flex', alignItems: 'center', gap: '15px', padding: '15px 20px', cursor: 'pointer', background: isActive ? 'rgba(168, 85, 247, 0.2)' : 'transparent', borderBottom: '1px solid rgba(255,255,255,0.02)', transition: '0.2s' }}>
@@ -629,7 +647,7 @@ const Dashboard = () => {
           {activeChat ? (
           <div style={{ flexGrow: 1, background: 'rgba(0,0,0,0.2)', borderRadius: '12px', border: '1px solid rgba(59, 130, 246, 0.4)', display: 'flex', flexDirection: 'column' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '15px', padding: '20px', borderBottom: '1px solid rgba(255,255,255,0.05)', background: 'linear-gradient(90deg, rgba(59, 130, 246, 0.1), transparent)' }}>
-                  <img src={activeChat.profilePic ? `${API_BASE}${activeChat.profilePic}` : `https://api.dicebear.com/7.x/avataaars/svg?seed=${activeChat.id}`} style={{ width: '50px', height: '50px', borderRadius: '50%', border: '2px solid #3b82f6', cursor: 'pointer' }} onClick={() => setViewingProfile(activeChat)} />
+                  <img src={activeChat.profilePic ? (activeChat.profilePic.startsWith('http') ? activeChat.profilePic : `${API_BASE}${activeChat.profilePic}`) : `https://api.dicebear.com/7.x/avataaars/svg?seed=${activeChat.id}`} style={{ width: '50px', height: '50px', borderRadius: '50%', border: '2px solid #3b82f6', cursor: 'pointer' }} onClick={() => setViewingProfile(activeChat)} />
                   <div><h3 style={{ margin: 0, color: 'white' }}>{activeChat.name}</h3><span style={{ color: '#4ade80', fontSize: '12px', fontWeight: 'bold' }}>● Secure P2P WebSocket Connected</span></div>
               </div>
               <div style={{ flexGrow: 1, overflowY: 'auto', padding: '25px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
@@ -736,7 +754,7 @@ const Dashboard = () => {
           <div style={{ marginTop: 'auto', background: 'rgba(255,255,255,0.05)', padding: '15px', borderRadius: '12px' }}>
             <p style={{ margin: '0 0 5px 0', fontSize: '12px', color: '#94a3b8' }}>Logged in as</p>
             <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                <img src={currentUser.profilePic ? `${API_BASE}${currentUser.profilePic}` : `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentUser.id}`} alt="Me" style={{ width: '30px', height: '30px', borderRadius: '50%' }} />
+                <img src={currentUser.profilePic ? (currentUser.profilePic.startsWith('http') ? currentUser.profilePic : `${API_BASE}${currentUser.profilePic}`) : `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentUser.id}`} alt="Me" style={{ width: '30px', height: '30px', borderRadius: '50%' }} />
                 <p style={{ margin: 0, fontWeight: 'bold', color: '#4ade80' }}>{currentUser.name}</p>
             </div>
           </div>
