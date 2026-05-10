@@ -4,7 +4,7 @@ const http = require('http');
 const { Server } = require('socket.io');
 require('dotenv').config();
 const { sequelize } = require('./models');
-sequelize.sync({ alter: true }).then(() => {
+sequelize.sync().then(() => {
     console.log("🟢 Database Connected & Synced! Dashboard Ecosystem is LIVE.");
 }).catch(err => {
     console.log("🔴 Database Sync Failed: ", err);
