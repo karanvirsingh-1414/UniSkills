@@ -1,4 +1,5 @@
 const { Session, User, sequelize } = require('../models');
+const { sendSessionRequestEmail } = require('../utils/email');
 exports.requestSession = async (req, res) => {
     try {
         const { topic, mentorId, studentId, offeredCredits } = req.body;
@@ -12,10 +13,18 @@ exports.requestSession = async (req, res) => {
             creditsTransferred: offeredCredits,
             status: 'pending'
         });
+        const mentor = await User.findByPk(mentorId);
+        
         req.app.get('socketio').emit(`notification_${mentorId}`, { 
             type: 'NEW_REQUEST', 
             message: `${student.name} requested a session on ${topic}` 
         });
+
+        // Send Email Notification to Mentor
+        if (mentor) {
+            sendSessionRequestEmail(mentor.email, mentor.name, student.name, topic, offeredCredits);
+        }
+
         res.status(201).json({ message: "Session request sent to mentor!", session });
     } catch (error) {
         res.status(500).json({ error: error.message });

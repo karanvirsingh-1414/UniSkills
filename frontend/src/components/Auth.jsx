@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import API_BASE from '../config';
 const Auth = () => {
     const [isLogin, setIsLogin] = useState(true);
+    const [isForgotPassword, setIsForgotPassword] = useState(false);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -13,7 +14,11 @@ const Auth = () => {
         e.preventDefault();
         setError('');
         try {
-            if (isLogin) {
+            if (isForgotPassword) {
+                const res = await axios.post(`${API_BASE}/api/auth/forgot-password`, { email });
+                alert(res.data.message || "Password reset link sent to your email!");
+                setIsForgotPassword(false);
+            } else if (isLogin) {
                 const res = await axios.post(`${API_BASE}/api/auth/login`, { email, password });
                 sessionStorage.setItem('user', JSON.stringify({ 
                     id: res.data.user?.id || res.data.user_id || 1, 
@@ -38,11 +43,11 @@ const Auth = () => {
             <div style={{ background: 'rgba(255,255,255,0.03)', padding: '50px 40px', borderRadius: '24px', width: '400px', border: '1px solid rgba(255,255,255,0.08)', backdropFilter: 'blur(30px)', zIndex: 1, boxShadow: '0 25px 50px rgba(0,0,0,0.5)' }}>
                 <div style={{ textAlign: 'center', marginBottom: '30px' }}>
                     <div style={{ display: 'inline-block', background: 'linear-gradient(135deg, #a64cff, #6222b5)', padding: '10px 15px', borderRadius: '12px', fontSize: '20px', fontWeight: 'bold', color: 'white', marginBottom: '15px' }}>U+S</div>
-                    <h2 style={{ color: 'white', margin: 0, fontSize: '26px' }}>{isLogin ? 'Access Ecosystem' : 'Join UniSkills'}</h2>
+                    <h2 style={{ color: 'white', margin: 0, fontSize: '26px' }}>{isForgotPassword ? 'Reset Password' : isLogin ? 'Access Ecosystem' : 'Join UniSkills'}</h2>
                 </div>
                 {error && <div style={{ color: '#fca5a5', marginBottom: '20px', textAlign: 'center', background: 'rgba(239, 68, 68, 0.1)', padding: '12px', borderRadius: '8px', fontSize: '14px', border: '1px solid rgba(239,68,68,0.2)' }}>{error}</div>}
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                    {!isLogin && (
+                    {!isLogin && !isForgotPassword && (
                         <div>
                             <label style={{color: '#94a3b8', fontSize: '13px', marginLeft: '5px'}}>Full Name</label>
                             <input type="text" value={name} onChange={e => setName(e.target.value)} required
@@ -54,18 +59,34 @@ const Auth = () => {
                         <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
                             style={{ width: '100%', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.1)', padding: '15px', borderRadius: '12px', color: 'white', marginTop: '5px', boxSizing: 'border-box' }} />
                     </div>
-                    <div>
-                        <label style={{color: '#94a3b8', fontSize: '13px', marginLeft: '5px'}}>Password</label>
-                        <input type="password" value={password} onChange={e => setPassword(e.target.value)} required
-                            style={{ width: '100%', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.1)', padding: '15px', borderRadius: '12px', color: 'white', marginTop: '5px', boxSizing: 'border-box' }} />
-                    </div>
+                    {!isForgotPassword && (
+                        <div>
+                            <label style={{color: '#94a3b8', fontSize: '13px', marginLeft: '5px'}}>Password</label>
+                            <input type="password" value={password} onChange={e => setPassword(e.target.value)} required
+                                style={{ width: '100%', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.1)', padding: '15px', borderRadius: '12px', color: 'white', marginTop: '5px', boxSizing: 'border-box' }} />
+                        </div>
+                    )}
                     <button type="submit" style={{ background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)', color: 'white', border: 'none', padding: '16px', borderRadius: '12px', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer', marginTop: '15px', boxShadow: '0 5px 15px rgba(59, 130, 246, 0.3)' }}>
-                        {isLogin ? 'Log In Securely' : 'Create Real Account'}
+                        {isForgotPassword ? 'Send Reset Link' : isLogin ? 'Log In Securely' : 'Create Real Account'}
                     </button>
                 </form>
-                <p style={{ color: '#94a3b8', textAlign: 'center', marginTop: '25px', cursor: 'pointer', fontSize: '14px' }} onClick={() => { setIsLogin(!isLogin); setError(''); }}>
-                    {isLogin ? "Don't have an account? Sign Up" : "Already have an account? Login"}
-                </p>
+
+                {isForgotPassword ? (
+                    <p style={{ color: '#94a3b8', textAlign: 'center', marginTop: '25px', cursor: 'pointer', fontSize: '14px' }} onClick={() => { setIsForgotPassword(false); setError(''); }}>
+                        Back to Login
+                    </p>
+                ) : (
+                    <>
+                        {isLogin && (
+                            <p style={{ color: '#ef4444', textAlign: 'right', marginTop: '10px', marginBottom: '0', cursor: 'pointer', fontSize: '13px' }} onClick={() => { setIsForgotPassword(true); setError(''); }}>
+                                Forgot Password?
+                            </p>
+                        )}
+                        <p style={{ color: '#94a3b8', textAlign: 'center', marginTop: '25px', cursor: 'pointer', fontSize: '14px' }} onClick={() => { setIsLogin(!isLogin); setError(''); }}>
+                            {isLogin ? "Don't have an account? Sign Up" : "Already have an account? Login"}
+                        </p>
+                    </>
+                )}
                 <div style={{ textAlign: 'center', marginTop: '15px' }}>
                    <p style={{ color: '#64748b', cursor: 'pointer', fontSize: '13px' }} onClick={() => navigate('/')}>← Return to Home</p>
                 </div>
