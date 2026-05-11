@@ -35,7 +35,7 @@ app.get('/api', (req, res) => {
 const path = require('path');
 app.use(express.static(path.join(__dirname, 'frontend/dist')));
 // Any non-API route serves the React app
-app.get('*', (req, res) => {
+app.use((req, res) => {
     res.sendFile(path.join(__dirname, 'frontend/dist', 'index.html'));
 });
 const server = http.createServer(app);
