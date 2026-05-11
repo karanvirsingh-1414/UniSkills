@@ -30,6 +30,16 @@ app.use('/api/dashboard', dashboardRoutes);
 app.get('/', (req, res) => {
     res.json({ message: "Welcome to UniSkills API. Server is running perfectly!" });
 });
+
+// ─── Serve React Frontend in Production ──────────────────────────────────────
+const path = require('path');
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, 'frontend/dist')));
+    // Any non-API route serves the React app
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, 'frontend/dist', 'index.html'));
+    });
+}
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
 app.set('socketio', io);
