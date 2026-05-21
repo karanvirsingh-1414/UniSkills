@@ -1,113 +1,254 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+
 const Landing = () => {
     const navigate = useNavigate();
-    const features = [
-        { icon: "🔄", title: "Live Skill Exchange", desc: "Instantly match with peers. Trade your knowledge for dynamic platform credits securely." },
-        { icon: "🛡️", title: "Verified Mentors", desc: "Every transaction builds your reputation. Prove your expertise with your ecosystem rating." },
-        { icon: "💳", title: "Internal Economy", desc: "A custom credit wallet ensures fair value exchange. No real money required, just pure knowledge." },
-        { icon: "📊", title: "Real-time Dashboard", desc: "Monitor campus learning statistics and live requests globally through a gorgeous glassmorphic lens." }
+
+    const stats = [
+        { label: "Active Exchange Sessions", value: "1,200+" },
+        { label: "Skills Registered", value: "85+" },
+        { label: "Credits Exchanged", value: "15k+" }
     ];
+
+    const coreCards = [
+        {
+            icon: "📚",
+            badge: "LEARN & TEACH",
+            title: "P2P Skill Exchange",
+            desc: "List the skills you have and those you want to learn. Our ecosystem matches you with peers for interactive, direct knowledge exchange sessions.",
+            color: "#a855f7"
+        },
+        {
+            icon: "🪙",
+            badge: "SECURE ECONOMY",
+            title: "Virtual Credit Wallet",
+            desc: "Keep learning free and fair. Earn credits by teaching your peers and spend them when you need to learn from others. No real money required.",
+            color: "#3b82f6"
+        },
+        {
+            icon: "📈",
+            badge: "CAMPUS HUB",
+            title: "Live Dashboard",
+            desc: "Track campus trends, monitor available mentors, view top requested skills, and join open exchange lobbies in real-time.",
+            color: "#10b981"
+        }
+    ];
+
     const steps = [
-        { num: "01", text: "Create your profile & list your skills." },
-        { num: "02", text: "Browse the hub for mentors or students." },
-        { num: "03", text: "Transfer credits to begin a 1-on-1 session." },
-        { num: "04", text: "Earn credits by completing teaching sessions." }
+        { num: "01", title: "Create Profile", text: "Sign up and list the skills you excel at and what you want to learn." },
+        { num: "02", title: "Request & Match", text: "Browse matching peers or post a dynamic session request on the dashboard." },
+        { num: "03", title: "Trade Credits", text: "Exchange credits securely when hosting or booking a peer mentoring session." }
     ];
+
     return (
-        <div style={{ background: '#07090f', minHeight: '100vh', color: 'white', overflowX: 'hidden', position: 'relative', fontFamily: 'Inter, sans-serif' }}>
-            {}
-            <nav style={{ display: 'flex', justifyContent: 'space-between', padding: '25px 10%', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.05)', background: 'rgba(7, 9, 15, 0.8)', backdropFilter: 'blur(20px)', position: 'sticky', top: 0, zIndex: 100 }}>
-                <div style={{ fontSize: '26px', fontWeight: '900', background: 'linear-gradient(135deg, #a64cff, #6222b5)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', cursor: 'pointer', letterSpacing: '-1px' }} onClick={() => window.scrollTo(0,0)}>
-                    U+S UniSkills
+        <div style={{ background: '#07090f', minHeight: '100vh', color: 'white', overflowX: 'hidden', position: 'relative', fontFamily: 'Inter, system-ui, sans-serif' }}>
+            <style>{`
+                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+                
+                .glow-card {
+                    background: rgba(255, 255, 255, 0.02);
+                    backdrop-filter: blur(20px);
+                    -webkit-backdrop-filter: blur(20px);
+                    border: 1px solid rgba(255, 255, 255, 0.05);
+                    border-radius: 20px;
+                    padding: 35px 25px;
+                    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+                    text-align: left;
+                    position: relative;
+                    overflow: hidden;
+                }
+                .glow-card::before {
+                    content: '';
+                    position: absolute;
+                    top: 0; left: 0; right: 0; bottom: 0;
+                    background: radial-gradient(800px circle at var(--x, 0) var(--y, 0), rgba(255,255,255,0.06), transparent 40%);
+                    z-index: 1;
+                    opacity: 0;
+                    transition: opacity 0.5s;
+                    pointer-events: none;
+                }
+                .glow-card:hover {
+                    transform: translateY(-8px);
+                    background: rgba(255, 255, 255, 0.04);
+                    border-color: rgba(255, 255, 255, 0.12);
+                    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+                }
+                .glow-card:hover .icon-box {
+                    transform: scale(1.1) rotate(2deg);
+                }
+                .nav-link:hover {
+                    color: white !important;
+                }
+                .btn-glow:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+                }
+                .btn-secondary:hover {
+                    transform: translateY(-2px);
+                    background: rgba(255, 255, 255, 0.05) !important;
+                    border-color: rgba(255, 255, 255, 0.4) !important;
+                }
+                .step-card {
+                    background: linear-gradient(135deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.02));
+                    border: 1px solid rgba(255, 255, 255, 0.04);
+                    border-radius: 16px;
+                    padding: 30px 20px;
+                    transition: all 0.3s ease;
+                }
+                .step-card:hover {
+                    border-color: rgba(168, 85, 247, 0.2);
+                    background: rgba(255, 255, 255, 0.03);
+                }
+            `}</style>
+
+            {/* Glowing background blurs */}
+            <div style={{ position: 'absolute', top: '5%', left: '-10%', width: '600px', height: '600px', background: '#7c3aed', filter: 'blur(220px)', opacity: 0.15, zIndex: 0, pointerEvents: 'none' }}></div>
+            <div style={{ position: 'absolute', top: '40%', right: '-10%', width: '600px', height: '600px', background: '#2563eb', filter: 'blur(220px)', opacity: 0.12, zIndex: 0, pointerEvents: 'none' }}></div>
+            <div style={{ position: 'absolute', bottom: '10%', left: '20%', width: '500px', height: '500px', background: '#db2777', filter: 'blur(200px)', opacity: 0.08, zIndex: 0, pointerEvents: 'none' }}></div>
+
+            {/* Navigation */}
+            <nav style={{ display: 'flex', justifyContent: 'space-between', padding: '20px 8%', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.04)', background: 'rgba(7, 9, 15, 0.7)', backdropFilter: 'blur(20px)', position: 'sticky', top: 0, zIndex: 100 }}>
+                <div style={{ fontSize: '24px', fontWeight: '900', background: 'linear-gradient(135deg, #a855f7, #3b82f6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', cursor: 'pointer', letterSpacing: '-0.5px' }} onClick={() => window.scrollTo(0,0)}>
+                    UniSkills
                 </div>
-                {}
-                <div style={{ display: 'flex', gap: '35px', alignItems: 'center', color: '#cbd5e1', fontWeight: '600', fontSize: '15px' }}>
-                    <span onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} style={{ cursor: 'pointer', transition: 'color 0.3s' }} onMouseOver={(e)=>e.target.style.color='white'} onMouseOut={(e)=>e.target.style.color='#cbd5e1'}>Home</span>
-                    <span onClick={() => document.getElementById('about').scrollIntoView({ behavior: 'smooth' })} style={{ cursor: 'pointer', transition: 'color 0.3s' }} onMouseOver={(e)=>e.target.style.color='white'} onMouseOut={(e)=>e.target.style.color='#cbd5e1'}>About Ecosystem</span>
-                    <span onClick={() => document.getElementById('features').scrollIntoView({ behavior: 'smooth' })} style={{ cursor: 'pointer', transition: 'color 0.3s' }} onMouseOver={(e)=>e.target.style.color='white'} onMouseOut={(e)=>e.target.style.color='#cbd5e1'}>Features</span>
-                    <span onClick={() => document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })} style={{ cursor: 'pointer', transition: 'color 0.3s' }} onMouseOver={(e)=>e.target.style.color='white'} onMouseOut={(e)=>e.target.style.color='#cbd5e1'}>Contact Us</span>
+                
+                <div style={{ display: 'flex', gap: '30px', alignItems: 'center', color: '#94a3b8', fontWeight: '500', fontSize: '14px' }}>
+                    <span onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="nav-link" style={{ cursor: 'pointer', transition: 'color 0.2s' }}>Home</span>
+                    <span onClick={() => document.getElementById('about').scrollIntoView({ behavior: 'smooth' })} className="nav-link" style={{ cursor: 'pointer', transition: 'color 0.2s' }}>How it Works</span>
+                    <span onClick={() => document.getElementById('stats').scrollIntoView({ behavior: 'smooth' })} className="nav-link" style={{ cursor: 'pointer', transition: 'color 0.2s' }}>Statistics</span>
                 </div>
-                <div style={{ display: 'flex', gap: '15px' }}>
-                    <button onClick={() => navigate('/auth')} style={{ background: 'transparent', color: 'white', border: '1px solid rgba(255,255,255,0.2)', padding: '10px 24px', borderRadius: '12px', cursor: 'pointer', fontWeight: 'bold', fontSize: '14px', transition: 'all 0.3s' }} onMouseOver={(e)=>e.target.style.background='rgba(255,255,255,0.1)'} onMouseOut={(e)=>e.target.style.background='transparent'}>Log In</button>
-                    <button onClick={() => navigate('/auth')} style={{ background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)', color: 'white', border: 'none', padding: '10px 28px', borderRadius: '12px', cursor: 'pointer', fontWeight: 'bold', fontSize: '14px', boxShadow: '0 5px 15px rgba(59, 130, 246, 0.3)' }}>Get Started</button>
+                
+                <div style={{ display: 'flex', gap: '12px' }}>
+                    <button onClick={() => navigate('/auth')} style={{ background: 'transparent', color: 'white', border: '1px solid rgba(255,255,255,0.15)', padding: '8px 20px', borderRadius: '10px', cursor: 'pointer', fontWeight: '600', fontSize: '13px', transition: 'all 0.2s' }} className="btn-secondary">Log In</button>
+                    <button onClick={() => navigate('/auth')} style={{ background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)', color: 'white', border: 'none', padding: '8px 22px', borderRadius: '10px', cursor: 'pointer', fontWeight: '600', fontSize: '13px', transition: 'all 0.2s' }} className="btn-glow">Get Started</button>
                 </div>
             </nav>
-            {}
-            <main style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '85vh', textAlign: 'center', padding: '0 20px', position: 'relative' }}>
-                <div style={{ border: '1px solid rgba(168, 85, 247, 0.4)', background: 'rgba(168, 85, 247, 0.1)', padding: '8px 20px', borderRadius: '30px', color: '#d8b4fe', fontWeight: 'bold', fontSize: '13px', marginBottom: '30px', letterSpacing: '1px', textTransform: 'uppercase' }}>
+
+            {/* Hero & Card Showcase Main Block */}
+            <main style={{ position: 'relative', zIndex: 1, padding: '70px 8% 100px 8%', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+                
+                {/* Badge */}
+                <div style={{ border: '1px solid rgba(168, 85, 247, 0.3)', background: 'rgba(168, 85, 247, 0.08)', padding: '6px 16px', borderRadius: '30px', color: '#c084fc', fontWeight: '700', fontSize: '12px', marginBottom: '25px', letterSpacing: '1px', textTransform: 'uppercase' }}>
                     🚀 REVOLUTIONIZING CAMPUS LEARNING
                 </div>
-                <h1 style={{ fontSize: '75px', margin: '0 0 25px 0', background: 'linear-gradient(to right, #ffffff, #a855f7)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontWeight: '800', letterSpacing: '-2px', maxWidth: '900px', lineHeight: '1.05' }}>
+                
+                {/* Main Heading */}
+                <h1 style={{ fontSize: '64px', margin: '0 0 20px 0', background: 'linear-gradient(to right, #ffffff, #a855f7)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontWeight: '800', letterSpacing: '-1.5px', maxWidth: '850px', lineHeight: '1.1' }}>
                     The Universal Skill Exchange Ecosystem
                 </h1>
-                <p style={{ fontSize: '20px', color: '#94a3b8', maxWidth: '700px', lineHeight: '1.6', marginBottom: '50px' }}>
-                    Connect with peers, master new skills, and earn real internal credits. UniSkills transforms your campus networking into a dynamic, real-time knowledge marketplace.
+                
+                {/* Description */}
+                <p style={{ fontSize: '18px', color: '#94a3b8', maxWidth: '650px', lineHeight: '1.6', marginBottom: '40px' }}>
+                    Connect with peers, master new skills, and earn virtual learning credits. UniSkills transforms campus networking into a dynamic, decentralized knowledge marketplace.
                 </p>
-                <div style={{ display: 'flex', gap: '20px' }}>
-                    <button onClick={() => navigate('/auth')} style={{ background: '#f8fafc', color: '#07090f', border: 'none', padding: '18px 45px', borderRadius: '12px', fontSize: '18px', fontWeight: '800', cursor: 'pointer', boxShadow: '0 10px 30px rgba(255, 255, 255, 0.1)', transition: 'transform 0.2s' }} onMouseOver={(e)=>e.target.style.transform='scale(1.05)'} onMouseOut={(e)=>e.target.style.transform='scale(1)'}>
+                
+                {/* Actions */}
+                <div style={{ display: 'flex', gap: '15px', marginBottom: '80px' }}>
+                    <button onClick={() => navigate('/auth')} style={{ background: '#f8fafc', color: '#07090f', border: 'none', padding: '14px 36px', borderRadius: '10px', fontSize: '15px', fontWeight: '700', cursor: 'pointer', boxShadow: '0 10px 25px rgba(255, 255, 255, 0.05)', transition: 'transform 0.2s' }} onMouseOver={(e)=>e.target.style.transform='scale(1.02)'} onMouseOut={(e)=>e.target.style.transform='scale(1)'}>
                         Enter the Platform
                     </button>
-                    <button onClick={() => document.getElementById('features').scrollIntoView({behavior: 'smooth'})} style={{ background: 'transparent', color: '#f8fafc', border: '1px solid rgba(255,255,255,0.3)', padding: '18px 45px', borderRadius: '12px', fontSize: '18px', fontWeight: '600', cursor: 'pointer', transition: 'all 0.2s' }} onMouseOver={(e)=>{e.target.style.background='rgba(255,255,255,0.05)'; e.target.style.transform='scale(1.05)'}} onMouseOut={(e)=>{e.target.style.background='transparent'; e.target.style.transform='scale(1)'}}>
-                        Learn More ↓
+                    <button onClick={() => document.getElementById('about').scrollIntoView({behavior: 'smooth'})} style={{ background: 'transparent', color: '#f8fafc', border: '1px solid rgba(255,255,255,0.2)', padding: '14px 36px', borderRadius: '10px', fontSize: '15px', fontWeight: '600', cursor: 'pointer', transition: 'all 0.2s' }} className="btn-secondary">
+                        How it Works ↓
                     </button>
                 </div>
-                {}
-                <div style={{ position: 'absolute', top: '10%', left: '-5%', width: '500px', height: '500px', background: '#9d4edd', filter: 'blur(200px)', opacity: 0.3, zIndex: -1 }}></div>
-                <div style={{ position: 'absolute', bottom: '-10%', right: '-5%', width: '500px', height: '500px', background: '#3a86ff', filter: 'blur(200px)', opacity: 0.3, zIndex: -1 }}></div>
-            </main>
-            {}
-            <section id="features" style={{ padding: '100px 10%', background: 'linear-gradient(180deg, #07090f 0%, rgba(26,29,36,0.3) 100%)', zIndex: 1, position: 'relative' }}>
-                <div style={{ textAlign: 'center', marginBottom: '70px' }}>
-                    <h2 style={{ fontSize: '45px', margin: '0 0 20px 0', fontWeight: '800', letterSpacing: '-1px' }}>Why Join UniSkills?</h2>
-                    <p style={{ color: '#94a3b8', fontSize: '18px', maxWidth: '600px', margin: '0 auto', lineHeight: '1.5' }}>Everything you need to thrive in a decentralized campus ecosystem without spending real money.</p>
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '30px' }}>
-                    {features.map((f, i) => (
-                        <div key={i} style={{ background: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.08)', padding: '40px 30px', borderRadius: '24px', transition: 'all 0.4s ease', cursor: 'default' }} onMouseOver={(e)=>{e.currentTarget.style.transform='translateY(-10px)'; e.currentTarget.style.background='rgba(255,255,255,0.06)'}} onMouseOut={(e)=>{e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.background='rgba(255,255,255,0.03)'}}>
-                            <div style={{ fontSize: '50px', marginBottom: '25px', display: 'inline-block', background: 'rgba(255,255,255,0.05)', padding: '15px', borderRadius: '16px' }}>{f.icon}</div>
-                            <h3 style={{ fontSize: '24px', margin: '0 0 15px 0', fontWeight: '700' }}>{f.title}</h3>
-                            <p style={{ color: '#94a3b8', lineHeight: '1.7', margin: 0, fontSize: '16px' }}>{f.desc}</p>
-                        </div>
-                    ))}
-                </div>
-            </section>
-            {}
-            <section id="about" style={{ padding: '120px 10%', position: 'relative', overflow: 'hidden' }}>
-                <div style={{ position: 'absolute', top: '20%', left: '30%', width: '600px', height: '600px', background: '#3b82f6', filter: 'blur(250px)', opacity: 0.15, zIndex: -1 }}></div>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '80px' }}>
-                    <h2 style={{ fontSize: '45px', margin: '0 0 20px 0', fontWeight: '800', letterSpacing: '-1px' }}>How It Works</h2>
-                    <p style={{ color: '#94a3b8', fontSize: '18px', maxWidth: '600px', margin: '0 auto', lineHeight: '1.5' }}>Four incredibly simple steps to start mastering new skills or growing your digital platform wallet.</p>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '25px' }}>
-                    {steps.map((step, i) => (
-                        <div key={i} style={{ flex: '1 1 200px', maxWidth: '280px', background: 'linear-gradient(135deg, rgba(88,28,135,0.1), rgba(15,23,42,0.5))', border: '1px solid rgba(168, 85, 247, 0.2)', padding: '40px 30px', borderRadius: '24px', textAlign: 'center', position: 'relative', boxShadow: '0 15px 35px rgba(0,0,0,0.2)' }}>
-                            <div style={{ fontSize: '70px', fontWeight: '900', color: 'rgba(255,255,255,0.03)', position: 'absolute', top: '10px', right: '20px', lineHeight: 1 }}>
-                                {step.num}
+
+                {/* Core Showcase Cards - Fills the empty space directly in the viewport */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '25px', width: '100%', maxWidth: '1100px', marginTop: '20px' }}>
+                    {coreCards.map((card, i) => (
+                        <div key={i} className="glow-card" style={{ cursor: 'default' }}>
+                            <div className="icon-box" style={{ 
+                                fontSize: '32px', 
+                                marginBottom: '20px', 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                justifyContent: 'center', 
+                                width: '60px', 
+                                height: '60px', 
+                                background: `rgba(255,255,255,0.02)`, 
+                                border: `1px solid rgba(255, 255, 255, 0.05)`, 
+                                borderRadius: '14px',
+                                boxShadow: `inset 0 0 12px rgba(255,255,255,0.02)`,
+                                transition: 'all 0.4s ease'
+                            }}>{card.icon}</div>
+                            
+                            <div style={{ 
+                                display: 'inline-block', 
+                                fontSize: '10px', 
+                                fontWeight: '850', 
+                                color: card.color, 
+                                background: `${card.color}15`, 
+                                padding: '4px 10px', 
+                                borderRadius: '6px', 
+                                letterSpacing: '1px',
+                                marginBottom: '12px'
+                            }}>
+                                {card.badge}
                             </div>
-                            <div style={{ fontSize: '26px', fontWeight: '900', background: 'linear-gradient(135deg, #a855f7, #6366f1)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '20px', display: 'inline-block' }}>
-                                Phase {step.num}
-                            </div>
-                            <p style={{ color: '#e2e8f0', fontSize: '17px', lineHeight: '1.6', margin: 0, fontWeight: '500' }}>
-                                {step.text}
+                            
+                            <h3 style={{ fontSize: '20px', margin: '0 0 12px 0', fontWeight: '700', color: '#f8fafc' }}>
+                                {card.title}
+                            </h3>
+                            
+                            <p style={{ color: '#94a3b8', lineHeight: '1.6', margin: 0, fontSize: '14.5px' }}>
+                                {card.desc}
                             </p>
                         </div>
                     ))}
                 </div>
-            </section>
-            {}
-            <footer id="contact" style={{ borderTop: '1px solid rgba(255,255,255,0.05)', padding: '50px 10%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#040508' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    <div style={{ fontSize: '22px', fontWeight: '900', color: '#e2e8f0', letterSpacing: '-0.5px' }}>U+S UniSkills</div>
-                    <div style={{ color: '#64748b', fontSize: '14px' }}>© 2026 UniSkills Platform.<br/>Powered by students, for students.</div>
+            </main>
+
+            {/* How It Works Section */}
+            <section id="about" style={{ padding: '80px 8%', borderTop: '1px solid rgba(255,255,255,0.03)', background: 'rgba(255,255,255,0.005)' }}>
+                <div style={{ textAlign: 'center', marginBottom: '50px' }}>
+                    <h2 style={{ fontSize: '36px', margin: '0 0 15px 0', fontWeight: '800', letterSpacing: '-0.5px' }}>How it Works</h2>
+                    <p style={{ color: '#94a3b8', fontSize: '16px', maxWidth: '500px', margin: '0 auto', lineHeight: '1.5' }}>
+                        Start learning from peer mentors and share your own skills in 3 simple steps.
+                    </p>
                 </div>
-                <div style={{ display: 'flex', gap: '30px', color: '#94a3b8', fontSize: '14px', fontWeight: '500' }}>
-                    <span style={{ cursor: 'pointer' }} onMouseOver={(e)=>e.target.style.color='white'} onMouseOut={(e)=>e.target.style.color='#94a3b8'}>Privacy Policy</span>
-                    <span style={{ cursor: 'pointer' }} onMouseOver={(e)=>e.target.style.color='white'} onMouseOut={(e)=>e.target.style.color='#94a3b8'}>Terms of Service</span>
-                    <span style={{ cursor: 'pointer' }} onMouseOver={(e)=>e.target.style.color='white'} onMouseOut={(e)=>e.target.style.color='#94a3b8'}>Support Dashboard</span>
+                
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', maxWidth: '1000px', margin: '0 auto' }}>
+                    {steps.map((step, i) => (
+                        <div key={i} className="step-card" style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <span style={{ fontSize: '13px', fontWeight: '700', color: '#a855f7', background: 'rgba(168, 85, 247, 0.08)', padding: '4px 10px', borderRadius: '6px' }}>STEP {step.num}</span>
+                                <span style={{ fontSize: '30px', fontWeight: '900', color: 'rgba(255,255,255,0.03)', lineHeight: 1 }}>{step.num}</span>
+                            </div>
+                            <h3 style={{ fontSize: '18px', margin: 0, fontWeight: '700', color: '#f8fafc' }}>{step.title}</h3>
+                            <p style={{ color: '#94a3b8', fontSize: '14px', lineHeight: '1.6', margin: 0 }}>{step.text}</p>
+                        </div>
+                    ))}
+                </div>
+            </section>
+
+            {/* Stats section */}
+            <section id="stats" style={{ padding: '80px 8%', borderTop: '1px solid rgba(255,255,255,0.03)' }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-around', gap: '40px', maxWidth: '1000px', margin: '0 auto' }}>
+                    {stats.map((stat, i) => (
+                        <div key={i} style={{ textAlign: 'center' }}>
+                            <div style={{ fontSize: '48px', fontWeight: '800', background: 'linear-gradient(135deg, #ffffff, #3b82f6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '8px' }}>
+                                {stat.value}
+                            </div>
+                            <div style={{ color: '#94a3b8', fontSize: '14px', fontWeight: '500', letterSpacing: '0.5px' }}>
+                                {stat.label}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </section>
+
+            {/* Footer */}
+            <footer style={{ borderTop: '1px solid rgba(255,255,255,0.04)', padding: '40px 8%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#040508' }}>
+                <div>
+                    <div style={{ fontSize: '18px', fontWeight: '900', color: '#f8fafc', letterSpacing: '-0.5px', marginBottom: '6px' }}>UniSkills</div>
+                    <div style={{ color: '#64748b', fontSize: '13px' }}>© 2026 UniSkills Platform. Built by students, for students.</div>
+                </div>
+                <div style={{ display: 'flex', gap: '25px', color: '#94a3b8', fontSize: '13px', fontWeight: '500' }}>
+                    <span style={{ cursor: 'pointer' }} className="nav-link">Privacy</span>
+                    <span style={{ cursor: 'pointer' }} className="nav-link">Terms</span>
                 </div>
             </footer>
         </div>
     );
 };
+
 export default Landing;
