@@ -1,4 +1,3 @@
-// app.js — Exportable Express app for testing (no server.listen here)
 const express = require('express');
 const cors = require('cors');
 
@@ -25,7 +24,6 @@ app.get('/', (req, res) => {
     res.json({ message: "Welcome to UniSkills API. Server is running perfectly!" });
 });
 
-// Attach a no-op socketio to avoid crashes in test env
 app.set('socketio', { emit: () => {} });
 
 module.exports = app;

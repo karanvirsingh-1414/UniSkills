@@ -12,7 +12,7 @@ exports.addSkill = async (req, res) => {
             include: [{ model: User, as: 'mentor', attributes: ['id', 'name', 'email', 'resumeUrl', 'profilePic', 'bio', 'cgpa', 'phone'] }]
         });
         req.app.get('socketio').emit('new_skill_published', populatedSkill);
-        res.status(201).json({ message: "Skill published to the campus!", skill: populatedSkill });
+        res.status(201).json({ message: "Skill added successfully!", skill: populatedSkill });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

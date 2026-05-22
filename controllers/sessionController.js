@@ -6,7 +6,7 @@ exports.requestSession = async (req, res) => {
         const student = await User.findByPk(studentId);
         if (!student) return res.status(404).json({ message: "Student not found" });
         if (student.credits < offeredCredits) {
-            return res.status(400).json({ message: "Insufficient credits to request this session." });
+            return res.status(400).json({ message: "You don't have enough credits for this." });
         }
         const session = await Session.create({
             topic, mentorId, studentId,
@@ -14,18 +14,17 @@ exports.requestSession = async (req, res) => {
             status: 'pending'
         });
         const mentor = await User.findByPk(mentorId);
-        
-        req.app.get('socketio').emit(`notification_${mentorId}`, { 
+
+                req.app.get('socketio').emit(`notification_${mentorId}`, { 
             type: 'NEW_REQUEST', 
             message: `${student.name} requested a session on ${topic}` 
         });
 
-        // Send Email Notification to Mentor
         if (mentor) {
             sendSessionRequestEmail(mentor.email, mentor.name, student.name, topic, offeredCredits);
         }
 
-        res.status(201).json({ message: "Session request sent to mentor!", session });
+        res.status(201).json({ message: "Request sent!", session });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -43,7 +42,7 @@ exports.acceptSession = async (req, res) => {
             type: 'SESSION_ACCEPTED', 
             message: `Your session on ${session.topic} was accepted and is now ACTIVE!` 
         });
-        res.status(200).json({ message: "Session is now active!", session });
+        res.status(200).json({ message: "Session started!", session });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -73,7 +72,7 @@ exports.completeSession = async (req, res) => {
         req.app.get('socketio').emit(`notification_${session.mentorId}`, { 
             type: 'SESSION_COMPLETED', message: `Session completed. +${session.creditsTransferred} credits earned!` 
         });
-        res.status(200).json({ message: "Session completed successfully. Transactions recorded.", session, newMentorBalance: mentor.credits });
+        res.status(200).json({ message: "Session finished and credits transferred!", session, newMentorBalance: mentor.credits });
     } catch (error) {
         await t.rollback(); 
         res.status(500).json({ error: error.message });

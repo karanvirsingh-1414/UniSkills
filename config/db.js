@@ -1,17 +1,15 @@
 const { Sequelize } = require('sequelize');
-require('dotenv').config();
+require('dotenv').config({ quiet: true });
 
 let sequelize;
 
 if (process.env.NODE_ENV === 'production') {
-    // Production (Render): Use SQLite for zero-config deployment
     sequelize = new Sequelize({
         dialect: 'sqlite',
-        storage: './uniskills_database.sqlite',
+        storage: './database/uniskills_database.sqlite',
         logging: false
     });
 } else {
-    // Local Development: Use MySQL
     sequelize = new Sequelize(
         process.env.DB_NAME || 'uniskills_db',
         process.env.DB_USER || 'root',

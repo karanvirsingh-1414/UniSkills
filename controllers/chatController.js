@@ -10,8 +10,8 @@ exports.sendMessage = async (req, res) => {
     try {
         const { senderId, receiverId, content } = req.body;
         const chatId = getChatId(senderId, receiverId);
-        
-        const messageData = {
+
+                const messageData = {
             senderId: senderId.toString(),
             receiverId: receiverId.toString(),
             content,
@@ -20,8 +20,7 @@ exports.sendMessage = async (req, res) => {
         };
 
         const docRef = await db.collection('chats').doc(chatId).collection('messages').add(messageData);
-        
-        // Update the main chat doc with last message info for quick loading
+
         await db.collection('chats').doc(chatId).set({
             lastMessage: content,
             lastMessageTime: messageData.createdAt,
@@ -29,8 +28,7 @@ exports.sendMessage = async (req, res) => {
         }, { merge: true });
 
         const populatedMessage = { id: docRef.id, ...messageData };
-        
-        // Still emit via socket for real-time fallback if frontend isn't using onSnapshot yet
+
         req.app.get('socketio').emit(`chat_${receiverId}`, populatedMessage);
         res.status(201).json(populatedMessage);
     } catch (err) {
@@ -42,11 +40,11 @@ exports.getChatHistory = async (req, res) => {
     try {
         const { user1Id, user2Id } = req.params;
         const chatId = getChatId(user1Id, user2Id);
-        
-        const snapshot = await db.collection('chats').doc(chatId).collection('messages').orderBy('createdAt', 'asc').get();
+
+                const snapshot = await db.collection('chats').doc(chatId).collection('messages').orderBy('createdAt', 'asc').get();
         const messages = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        
-        res.status(200).json(messages);
+
+                res.status(200).json(messages);
     } catch (err) {
          res.status(500).json({ error: err.message });
     }
@@ -55,17 +53,15 @@ exports.getChatHistory = async (req, res) => {
 exports.getChatContacts = async (req, res) => {
     try {
          const { userId } = req.params;
-         // Get all users from MySQL
          const contacts = await User.findAll({
              where: { id: { [Op.ne]: userId } },
              attributes: ['id', 'name', 'profilePic']
          });
-         
-         const contactsWithMeta = await Promise.all(contacts.map(async (contact) => {
+
+                  const contactsWithMeta = await Promise.all(contacts.map(async (contact) => {
              const raw = contact.toJSON();
              const chatId = getChatId(userId, raw.id);
-             
-             // Get last message info
+
              const chatDoc = await db.collection('chats').doc(chatId).get();
              if (chatDoc.exists) {
                  const data = chatDoc.data();
@@ -76,24 +72,23 @@ exports.getChatContacts = async (req, res) => {
                  raw.lastMessageTime = null;
              }
 
-             // Count unread messages where receiver is current user and sender is contact
              const unreadSnapshot = await db.collection('chats').doc(chatId).collection('messages')
                  .where('receiverId', '==', userId.toString())
                  .where('senderId', '==', raw.id.toString())
                  .where('read', '==', false)
                  .get();
-                 
-             raw.unreadCount = unreadSnapshot.size;
+
+                              raw.unreadCount = unreadSnapshot.size;
              return raw;
          }));
-         
-         contactsWithMeta.sort((a, b) => {
+
+                  contactsWithMeta.sort((a, b) => {
              if (!a.lastMessageTime) return 1;
              if (!b.lastMessageTime) return -1;
              return new Date(b.lastMessageTime) - new Date(a.lastMessageTime);
          });
-         
-         res.status(200).json(contactsWithMeta);
+
+                  res.status(200).json(contactsWithMeta);
     } catch(err) {
          console.error(err);
          res.status(500).json({ error: err.message });
@@ -104,20 +99,20 @@ exports.markMessagesAsSeen = async (req, res) => {
     try {
         const { myUserId, chatPartnerId } = req.body;
         const chatId = getChatId(myUserId, chatPartnerId);
-        
-        const unreadSnapshot = await db.collection('chats').doc(chatId).collection('messages')
+
+                const unreadSnapshot = await db.collection('chats').doc(chatId).collection('messages')
             .where('receiverId', '==', myUserId.toString())
             .where('senderId', '==', chatPartnerId.toString())
             .where('read', '==', false)
             .get();
-            
-        const batch = db.batch();
+
+                    const batch = db.batch();
         unreadSnapshot.docs.forEach(doc => {
             batch.update(doc.ref, { read: true });
         });
         await batch.commit();
-        
-        req.app.get('socketio').emit(`chat_seen_${chatPartnerId}`, { viewerId: myUserId });
+
+                req.app.get('socketio').emit(`chat_seen_${chatPartnerId}`, { viewerId: myUserId });
         res.status(200).json({ success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });

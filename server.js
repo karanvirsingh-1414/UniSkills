@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const http = require('http'); 
 const { Server } = require('socket.io');
-require('dotenv').config();
+require('dotenv').config({ quiet: true });
 const { sequelize } = require('./models');
 sequelize.sync().then(() => {
     console.log("🟢 Database Connected & Synced! Dashboard Ecosystem is LIVE.");
@@ -31,10 +31,8 @@ app.get('/api', (req, res) => {
     res.json({ message: "Welcome to UniSkills API. Server is running perfectly!" });
 });
 
-// ─── Serve React Frontend ──────────────────────────────────────
 const path = require('path');
 app.use(express.static(path.join(__dirname, 'frontend/dist')));
-// Any non-API route serves the React app
 app.use((req, res) => {
     res.sendFile(path.join(__dirname, 'frontend/dist', 'index.html'));
 });
@@ -42,15 +40,12 @@ const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
 app.set('socketio', io);
 io.on('connection', (socket) => {
-    console.log(`Live user connected with ID: ${socket.id}`);
     socket.on('join_user_room', (userId) => {
         socket.join(`user_room_${userId}`);
-        console.log(`User ${userId} joined room for live UI updates.`);
     });
     socket.on('demo_send_request', (data) => {
         io.to(`user_room_${data.toUserId}`).emit('demo_receive_request', data);
     });
-    console.log('Live user connected with ID:', socket.id);
     socket.on('initiate_video_call', (data) => {
         io.emit(`incoming_video_call_${data.targetId}`, data);
     });
@@ -61,10 +56,10 @@ io.on('connection', (socket) => {
         io.emit(`video_call_rejected_${data.callerId}`, data);
     });
     socket.on('disconnect', () => {
-        console.log('User disconnected:', socket.id);
+        // user disconnected
     });
 });
 const PORT = process.env.PORT || 8080;
 server.listen(PORT, () => {
-    console.log(`Server and Socket.io are fully running on port: ${PORT}`);
+    console.log(`Server running on port: ${PORT}`);
 });

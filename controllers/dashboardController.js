@@ -26,7 +26,7 @@ const updateMyProfile = async (req, res) => {
         if (cgpa) user.cgpa = cgpa;
         if (phone) user.phone = phone;
         await user.save();
-        res.status(200).json({ message: "Identity Details updated perfectly!", user });
+        res.status(200).json({ message: "Profile updated successfully!", user });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

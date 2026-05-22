@@ -33,7 +33,7 @@ const UserProfileModal = ({ profile, onClose }) => {
             </div>
          </div>
          {profile.resumeUrl ? (
-             <a href={profile.resumeUrl.startsWith('http') ? profile.resumeUrl : `${API_BASE}${profile.resumeUrl}`} target="_blank" rel="noreferrer" style={{ display: 'block', textAlign: 'center', background: 'linear-gradient(135deg, #a64cff, #6222b5)', color: 'white', padding: '12px', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold' }}>
+             <a href={`https://docs.google.com/viewer?url=${encodeURIComponent(profile.resumeUrl.startsWith('http') ? profile.resumeUrl : `${API_BASE}${profile.resumeUrl}`)}`} target="_blank" rel="noreferrer" style={{ display: 'block', textAlign: 'center', background: 'linear-gradient(135deg, #a64cff, #6222b5)', color: 'white', padding: '12px', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold' }}>
                📄 View Portfolio / Resume PDF
              </a>
          ) : (
@@ -137,6 +137,16 @@ const Dashboard = () => {
          socket.on(`video_call_rejected_${parsedUser.id}`, () => {
              alert("The remote peer is busy and declined your video call request.");
          });
+         
+         return () => {
+             socket.off(`notification_${parsedUser.id}`);
+             socket.off('new_skill_published');
+             socket.off(`chat_${parsedUser.id}`);
+             socket.off(`chat_seen_${parsedUser.id}`);
+             socket.off(`incoming_video_call_${parsedUser.id}`);
+             socket.off(`video_call_accepted_${parsedUser.id}`);
+             socket.off(`video_call_rejected_${parsedUser.id}`);
+         };
       }
     } else {
       window.location.href = '/auth';
@@ -514,7 +524,7 @@ const Dashboard = () => {
               <div style={{ background: 'rgba(255,255,255,0.01)', padding: '25px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
                      <p style={{ margin: 0, color: '#e2e8f0', fontWeight: 'bold', fontSize: '15px' }}>Resumé & Portfolio (PDF)</p>
-                     {currentUser.resumeUrl && <a href={currentUser.resumeUrl.startsWith('http') ? currentUser.resumeUrl : `${API_BASE}${currentUser.resumeUrl}`} target="_blank" rel="noreferrer" style={{ fontSize: '13px', background: 'rgba(168, 85, 247, 0.2)', color: '#d8b4fe', padding: '4px 10px', borderRadius: '6px', textDecoration: 'none', fontWeight: 'bold' }}>Open Document</a>}
+                     {currentUser.resumeUrl && <a href={`https://docs.google.com/viewer?url=${encodeURIComponent(currentUser.resumeUrl.startsWith('http') ? currentUser.resumeUrl : `${API_BASE}${currentUser.resumeUrl}`)}`} target="_blank" rel="noreferrer" style={{ fontSize: '13px', background: 'rgba(168, 85, 247, 0.2)', color: '#d8b4fe', padding: '4px 10px', borderRadius: '6px', textDecoration: 'none', fontWeight: 'bold' }}>Open Document</a>}
                  </div>
                  <form onSubmit={handlePdfUpload} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                     <input id="pdfUploader" type="file" accept="application/pdf" onChange={e => setFile(e.target.files[0])} style={{ display: 'none' }} />
@@ -690,13 +700,16 @@ const Dashboard = () => {
                        <div style={{ width: '12px', height: '12px', background: '#ef4444', borderRadius: '50%', animation: 'pulse 1.5s infinite' }}></div>
                        <h3 style={{ margin: 0, color: 'white' }}>Live P2P Subsystem Encryption [Room ID: {activeVideoRoom}]</h3>
                    </div>
-                   <button onClick={() => setActiveVideoRoom(null)} style={{ background: '#ef4444', color: 'white', border: 'none', padding: '10px 25px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 5px 15px rgba(239, 68, 68, 0.4)' }}>Leave Classroom</button>
+                   <div style={{ display: 'flex', gap: '10px' }}>
+                       <a href={`https://meet.systemli.org/UniSkills_Classroom_${activeVideoRoom}`} target="_blank" rel="noreferrer" style={{ background: '#3b82f6', color: 'white', textDecoration: 'none', padding: '10px 20px', borderRadius: '8px', fontWeight: 'bold' }}>Open in New Tab ↗️</a>
+                       <button onClick={() => setActiveVideoRoom(null)} style={{ background: '#ef4444', color: 'white', border: 'none', padding: '10px 25px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 5px 15px rgba(239, 68, 68, 0.4)' }}>Leave Classroom</button>
+                   </div>
                 </div>
                 {}
                 <iframe 
                     allow="camera; microphone; fullscreen; display-capture; autoplay" 
-                    src={`https://meet.jit.si/UniSkills_Private_Classroom_Session_${activeVideoRoom}_Node`} 
-                    style={{ height: '100%', width: '100%', border: 'none', marginTop: '60px' }}
+                    src={`https://meet.systemli.org/UniSkills_Classroom_${activeVideoRoom}`} 
+                    style={{ height: 'calc(100% - 60px)', width: '100%', border: 'none', marginTop: '60px' }}
                 ></iframe>
             </div>
         );
@@ -741,7 +754,7 @@ const Dashboard = () => {
       )}
       <div className="dashboard-container">
         <div className="sidebar">
-          <div className="brand"><div className="brand-icon">U+S</div><div>UniSkills</div></div>
+          <div className="brand" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}><img src="/logo.png" alt="Logo" style={{ height: '35px', borderRadius: '8px' }} /><div>UniSkills</div></div>
           <div className="nav-menu">
             <div className={`nav-item ${activeTab==='dashboard'?'active':''}`} onClick={()=>setActiveTab('dashboard')}><span className="nav-icon">🏠</span> Dashboard</div>
             <div className={`nav-item ${activeTab==='skills'?'active':''}`} onClick={()=>setActiveTab('skills')}><span className="nav-icon">📚</span> Global Skills</div>

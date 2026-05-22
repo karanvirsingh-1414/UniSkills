@@ -15,7 +15,7 @@ const Landing = () => {
             icon: "📚",
             badge: "LEARN & TEACH",
             title: "P2P Skill Exchange",
-            desc: "List the skills you have and those you want to learn. Our ecosystem matches you with peers for interactive, direct knowledge exchange sessions.",
+            desc: "List the skills you excel at and those you want to learn. Our ecosystem matches you with peers for interactive, direct knowledge exchange sessions.",
             color: "#a855f7"
         },
         {
@@ -57,16 +57,6 @@ const Landing = () => {
                     position: relative;
                     overflow: hidden;
                 }
-                .glow-card::before {
-                    content: '';
-                    position: absolute;
-                    top: 0; left: 0; right: 0; bottom: 0;
-                    background: radial-gradient(800px circle at var(--x, 0) var(--y, 0), rgba(255,255,255,0.06), transparent 40%);
-                    z-index: 1;
-                    opacity: 0;
-                    transition: opacity 0.5s;
-                    pointer-events: none;
-                }
                 .glow-card:hover {
                     transform: translateY(-8px);
                     background: rgba(255, 255, 255, 0.04);
@@ -76,12 +66,23 @@ const Landing = () => {
                 .glow-card:hover .icon-box {
                     transform: scale(1.1) rotate(2deg);
                 }
+                .nav-link {
+                    cursor: pointer;
+                    transition: color 0.2s, transform 0.2s;
+                }
                 .nav-link:hover {
                     color: white !important;
+                    transform: translateY(-1px);
+                }
+                .btn-glow {
+                    transition: all 0.3s ease;
                 }
                 .btn-glow:hover {
                     transform: translateY(-2px);
                     box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+                }
+                .btn-secondary {
+                    transition: all 0.3s ease;
                 }
                 .btn-secondary:hover {
                     transform: translateY(-2px);
@@ -99,6 +100,27 @@ const Landing = () => {
                     border-color: rgba(168, 85, 247, 0.2);
                     background: rgba(255, 255, 255, 0.03);
                 }
+                .feature-row {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 60px;
+                    margin: 100px 0;
+                    width: 100%;
+                    max-width: 1100px;
+                    text-align: left;
+                }
+                @media (max-width: 768px) {
+                    .feature-row {
+                        flex-direction: column !important;
+                        text-align: center;
+                        gap: 30px;
+                        margin: 60px 0;
+                    }
+                    .feature-image {
+                        max-width: 100% !important;
+                    }
+                }
             `}</style>
 
             {/* Glowing background blurs */}
@@ -108,24 +130,26 @@ const Landing = () => {
 
             {/* Navigation */}
             <nav style={{ display: 'flex', justifyContent: 'space-between', padding: '20px 8%', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.04)', background: 'rgba(7, 9, 15, 0.7)', backdropFilter: 'blur(20px)', position: 'sticky', top: 0, zIndex: 100 }}>
-                <div style={{ fontSize: '24px', fontWeight: '900', background: 'linear-gradient(135deg, #a855f7, #3b82f6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', cursor: 'pointer', letterSpacing: '-0.5px' }} onClick={() => window.scrollTo(0,0)}>
-                    UniSkills
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '24px', fontWeight: '900', background: 'linear-gradient(135deg, #a855f7, #3b82f6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', cursor: 'pointer', letterSpacing: '-0.5px' }} onClick={() => window.scrollTo(0,0)}>
+                    <img src="/logo.png" alt="UniSkills Logo" style={{ height: '36px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }} />
+                    <span>UniSkills</span>
                 </div>
                 
                 <div style={{ display: 'flex', gap: '30px', alignItems: 'center', color: '#94a3b8', fontWeight: '500', fontSize: '14px' }}>
-                    <span onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="nav-link" style={{ cursor: 'pointer', transition: 'color 0.2s' }}>Home</span>
-                    <span onClick={() => document.getElementById('about').scrollIntoView({ behavior: 'smooth' })} className="nav-link" style={{ cursor: 'pointer', transition: 'color 0.2s' }}>How it Works</span>
-                    <span onClick={() => document.getElementById('stats').scrollIntoView({ behavior: 'smooth' })} className="nav-link" style={{ cursor: 'pointer', transition: 'color 0.2s' }}>Statistics</span>
+                    <span onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="nav-link">Home</span>
+                    <span onClick={() => document.getElementById('features').scrollIntoView({ behavior: 'smooth' })} className="nav-link">Features</span>
+                    <span onClick={() => document.getElementById('about').scrollIntoView({ behavior: 'smooth' })} className="nav-link">How it Works</span>
+                    <span onClick={() => document.getElementById('stats').scrollIntoView({ behavior: 'smooth' })} className="nav-link">Stats</span>
                 </div>
                 
                 <div style={{ display: 'flex', gap: '12px' }}>
-                    <button onClick={() => navigate('/auth')} style={{ background: 'transparent', color: 'white', border: '1px solid rgba(255,255,255,0.15)', padding: '8px 20px', borderRadius: '10px', cursor: 'pointer', fontWeight: '600', fontSize: '13px', transition: 'all 0.2s' }} className="btn-secondary">Log In</button>
-                    <button onClick={() => navigate('/auth')} style={{ background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)', color: 'white', border: 'none', padding: '8px 22px', borderRadius: '10px', cursor: 'pointer', fontWeight: '600', fontSize: '13px', transition: 'all 0.2s' }} className="btn-glow">Get Started</button>
+                    <button onClick={() => navigate('/auth')} style={{ background: 'transparent', color: 'white', border: '1px solid rgba(255,255,255,0.15)', padding: '8px 20px', borderRadius: '10px', cursor: 'pointer', fontWeight: '600', fontSize: '13px' }} className="btn-secondary">Log In</button>
+                    <button onClick={() => navigate('/auth')} style={{ background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)', color: 'white', border: 'none', padding: '8px 22px', borderRadius: '10px', cursor: 'pointer', fontWeight: '600', fontSize: '13px' }} className="btn-glow">Get Started</button>
                 </div>
             </nav>
 
-            {/* Hero & Card Showcase Main Block */}
-            <main style={{ position: 'relative', zIndex: 1, padding: '70px 8% 100px 8%', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+            {/* Hero & Showcase Main Block */}
+            <main style={{ position: 'relative', zIndex: 1, padding: '70px 8% 50px 8%', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
                 
                 {/* Badge */}
                 <div style={{ border: '1px solid rgba(168, 85, 247, 0.3)', background: 'rgba(168, 85, 247, 0.08)', padding: '6px 16px', borderRadius: '30px', color: '#c084fc', fontWeight: '700', fontSize: '12px', marginBottom: '25px', letterSpacing: '1px', textTransform: 'uppercase' }}>
@@ -143,16 +167,16 @@ const Landing = () => {
                 </p>
                 
                 {/* Actions */}
-                <div style={{ display: 'flex', gap: '15px', marginBottom: '80px' }}>
+                <div style={{ display: 'flex', gap: '15px', marginBottom: '60px' }}>
                     <button onClick={() => navigate('/auth')} style={{ background: '#f8fafc', color: '#07090f', border: 'none', padding: '14px 36px', borderRadius: '10px', fontSize: '15px', fontWeight: '700', cursor: 'pointer', boxShadow: '0 10px 25px rgba(255, 255, 255, 0.05)', transition: 'transform 0.2s' }} onMouseOver={(e)=>e.target.style.transform='scale(1.02)'} onMouseOut={(e)=>e.target.style.transform='scale(1)'}>
                         Enter the Platform
                     </button>
-                    <button onClick={() => document.getElementById('about').scrollIntoView({behavior: 'smooth'})} style={{ background: 'transparent', color: '#f8fafc', border: '1px solid rgba(255,255,255,0.2)', padding: '14px 36px', borderRadius: '10px', fontSize: '15px', fontWeight: '600', cursor: 'pointer', transition: 'all 0.2s' }} className="btn-secondary">
+                    <button onClick={() => document.getElementById('about').scrollIntoView({behavior: 'smooth'})} style={{ background: 'transparent', color: '#f8fafc', border: '1px solid rgba(255,255,255,0.2)', padding: '14px 36px', borderRadius: '10px', fontSize: '15px', fontWeight: '600', cursor: 'pointer' }} className="btn-secondary">
                         How it Works ↓
                     </button>
                 </div>
 
-                {/* Core Showcase Cards - Fills the empty space directly in the viewport */}
+                {/* Core Showcase Cards */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '25px', width: '100%', maxWidth: '1100px', marginTop: '20px' }}>
                     {coreCards.map((card, i) => (
                         <div key={i} className="glow-card" style={{ cursor: 'default' }}>
@@ -195,6 +219,68 @@ const Landing = () => {
                         </div>
                     ))}
                 </div>
+
+                {/* Unique Showcase Rows with generated illustrations */}
+                <section id="features" style={{ width: '100%', maxWidth: '1100px', marginTop: '80px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    
+                    {/* Feature 1: Peer-to-Peer Interactive Learning */}
+                    <div className="feature-row">
+                        <div style={{ flex: 1 }}>
+                            <span style={{ fontSize: '11px', fontWeight: '800', color: '#3b82f6', background: 'rgba(59, 130, 246, 0.08)', padding: '5px 12px', borderRadius: '30px', letterSpacing: '1px', textTransform: 'uppercase' }}>
+                                Interactive Education
+                            </span>
+                            <h2 style={{ fontSize: '36px', fontWeight: '800', margin: '15px 0', color: '#f8fafc', lineHeight: '1.2' }}>
+                                Collab-focused Peer Study Rooms
+                            </h2>
+                            <p style={{ color: '#94a3b8', fontSize: '16px', lineHeight: '1.7', margin: 0 }}>
+                                Find other students on campus who possess the exact technical expertise you want to acquire. Connect instantly via secure chat rooms powered by Firebase and schedule direct WebRTC video meetings through Jitsi integration. Expand your coding knowledge, project capabilities, and portfolio collaboratively.
+                            </p>
+                        </div>
+                        <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
+                            <div style={{
+                                position: 'relative',
+                                borderRadius: '24px',
+                                border: '1px solid rgba(255,255,255,0.06)',
+                                overflow: 'hidden',
+                                padding: '8px',
+                                background: 'rgba(255,255,255,0.01)',
+                                boxShadow: '0 30px 60px rgba(0,0,0,0.5)',
+                                maxWidth: '450px'
+                            }} className="feature-image">
+                                <img src="/peer_learning.png" alt="Peer Learning Illustration" style={{ width: '100%', borderRadius: '18px', display: 'block' }} />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Feature 2: Decentralized Credit Economy */}
+                    <div className="feature-row" style={{ flexDirection: 'row-reverse' }}>
+                        <div style={{ flex: 1 }}>
+                            <span style={{ fontSize: '11px', fontWeight: '800', color: '#a855f7', background: 'rgba(168, 85, 247, 0.08)', padding: '5px 12px', borderRadius: '30px', letterSpacing: '1px', textTransform: 'uppercase' }}>
+                                Campus Credit Ledger
+                            </span>
+                            <h2 style={{ fontSize: '36px', fontWeight: '800', margin: '15px 0', color: '#f8fafc', lineHeight: '1.2' }}>
+                                Earn Credits by Sharing Your Knowledge
+                            </h2>
+                            <p style={{ color: '#94a3b8', fontSize: '16px', lineHeight: '1.7', margin: 0 }}>
+                                Keep education democratic. Teaching others awards you learning credits inside your virtual wallet. Use these credits to request mentoring sessions in advanced fields, review code repositories with top-tier peers, or get structured roadmap feedback. A completely cashless peer-to-peer knowledge network.
+                            </p>
+                        </div>
+                        <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
+                            <div style={{
+                                position: 'relative',
+                                borderRadius: '24px',
+                                border: '1px solid rgba(255,255,255,0.06)',
+                                overflow: 'hidden',
+                                padding: '8px',
+                                background: 'rgba(255,255,255,0.01)',
+                                boxShadow: '0 30px 60px rgba(0,0,0,0.5)',
+                                maxWidth: '450px'
+                            }} className="feature-image">
+                                <img src="/credit_wallet.png" alt="Credit Wallet Illustration" style={{ width: '100%', borderRadius: '18px', display: 'block' }} />
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </main>
 
             {/* How It Works Section */}
@@ -238,8 +324,11 @@ const Landing = () => {
 
             {/* Footer */}
             <footer style={{ borderTop: '1px solid rgba(255,255,255,0.04)', padding: '40px 8%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#040508' }}>
-                <div>
-                    <div style={{ fontSize: '18px', fontWeight: '900', color: '#f8fafc', letterSpacing: '-0.5px', marginBottom: '6px' }}>UniSkills</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '20px', fontWeight: '900', color: '#f8fafc', letterSpacing: '-0.5px' }}>
+                        <img src="/logo.png" alt="UniSkills logo" style={{ height: '30px', borderRadius: '6px' }} />
+                        <span>UniSkills</span>
+                    </div>
                     <div style={{ color: '#64748b', fontSize: '13px' }}>© 2026 UniSkills Platform. Built by students, for students.</div>
                 </div>
                 <div style={{ display: 'flex', gap: '25px', color: '#94a3b8', fontSize: '13px', fontWeight: '500' }}>

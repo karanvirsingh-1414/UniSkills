@@ -8,18 +8,17 @@ exports.registerUser = async (req, res) => {
         const { name, email, password, role } = req.body;
         const existingUser = await User.findOne({ where: { email } });
         if (existingUser) return res.status(400).json({ message: "User already exists with this email." });
-        
-        const salt = await bcrypt.genSalt(10);
+
+                const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
-        
-        const newUser = await User.create({
+
+                const newUser = await User.create({
             name,
             email,
             password: hashedPassword,
             role
         });
 
-        // Send Welcome Email asynchronously
         sendWelcomeEmail(newUser.email, newUser.name);
 
         res.status(201).json({ message: "User registered successfully!", userId: newUser.id });
@@ -85,8 +84,8 @@ exports.resetPassword = async (req, res) => {
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET || 'supersecretkey_uniskills');
         const user = await User.findByPk(decoded.id);
-        
-        if (!user) return res.status(404).json({ message: "User not found." });
+
+                if (!user) return res.status(404).json({ message: "User not found." });
 
         const salt = await bcrypt.genSalt(10);
         user.password = await bcrypt.hash(newPassword, salt);

@@ -11,7 +11,7 @@ const ResetPassword = () => {
     const navigate = useNavigate();
     const location = useLocation();
     
-    // Extract token from URL like ?token=eyJhbG...
+
     const queryParams = new URLSearchParams(location.search);
     const token = queryParams.get('token');
 
@@ -47,7 +47,9 @@ const ResetPassword = () => {
             <div style={{ position: 'absolute', top: '10%', left: '10%', width: '400px', height: '400px', background: '#ef4444', filter: 'blur(150px)', opacity: 0.15, zIndex: 0 }}></div>
             <div style={{ background: 'rgba(255,255,255,0.03)', padding: '50px 40px', borderRadius: '24px', width: '400px', border: '1px solid rgba(255,255,255,0.08)', backdropFilter: 'blur(30px)', zIndex: 1, boxShadow: '0 25px 50px rgba(0,0,0,0.5)' }}>
                 <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-                    <div style={{ display: 'inline-block', background: 'linear-gradient(135deg, #ef4444, #b91c1c)', padding: '10px 15px', borderRadius: '12px', fontSize: '20px', fontWeight: 'bold', color: 'white', marginBottom: '15px' }}>U+S</div>
+                    <div style={{ display: 'inline-block', marginBottom: '15px' }}>
+                        <img src="/logo.png" alt="UniSkills" style={{ height: '60px', borderRadius: '16px', boxShadow: '0 10px 20px rgba(239, 68, 68, 0.4)' }} />
+                    </div>
                     <h2 style={{ color: 'white', margin: 0, fontSize: '26px' }}>Set New Password</h2>
                 </div>
                 
